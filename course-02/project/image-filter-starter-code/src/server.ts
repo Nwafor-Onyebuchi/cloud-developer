@@ -27,19 +27,6 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   // RETURNS
   //   the filtered image file [!!TIP res.sendFile(filteredpath); might be useful]
 
-  /**************************************************************************** */
-
-  //! END @TODO1
-  
-  // Root Endpoint
-  // Displays a simple message to the user
-  app.get( "/", async ( req, res ) => {
-    const fille =filterImageFromURL('https://timedotcom.files.wordpress.com/2019/03/kitten-report.jpg')
-
-    res.send("try GET /filteredimage?image_url={{}}")
-  } );
-
-  // GET /filteredimage?image_url={{URL}}
   app.get('/filteredimage', async(req,res)=>{
     const query:string = req.query.image_url
     try {
@@ -47,15 +34,26 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
         res.send('image url is required')
       } else { // Send the resulting file in the response
         const file = await filterImageFromURL(query)
-        res.sendFile(file)
+        await res.send(file)
         deleteLocalFiles([file]) // deletes any files on the server on finish of the response
       }
     } catch (error) { // catch any error
+      console.log(error)
       res.status(500).send('An error occured. Please contact support')
     }
   
   })
   
+  /**************************************************************************** */
+
+  //! END @TODO1
+  
+  // Root Endpoint
+  // Displays a simple message to the user
+  app.get( "/", async ( req, res ) => {
+    res.send("try GET /filteredimage?image_url={{}}")
+  } );
+
 
   // Start the Server
   app.listen( port, () => {
